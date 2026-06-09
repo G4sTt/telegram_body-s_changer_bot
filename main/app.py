@@ -1,21 +1,74 @@
 import asyncio
 import os
+from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
+from magic_filter import F
 
-bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
+load_dotenv()
+
+TOKEN = os.getenv("TELEGRAM_BODY_TOKEN")
+if not TOKEN:
+    raise ValueError("TELEGRAM_BODY_TOKEN not set")
+
+bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
 @dp.message(Command("start"))
-async def start(message):
-    await message.answer(f"Привет,"
-                         f"я бот который делает замеры твоего тела"
-                         f"мои функции:"
-                         f"/body - начать делать замеры")
+async def start(message: Message):
+    await message.answer(
+        "Привет!\n"
+        "Я бот, который делает замеры твоего тела.\n\n"
+        "Мои функции:\n"
+        "/body - начать делать замеры"
+    )
+
+@dp.message(Command("body"))
+async def body(message: Message):
+    inline_menu = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Верх тела 🧍‍♂️", callback_data="upper_body")],
+        [InlineKeyboardButton(text="Низ тела 🦵", callback_data="lower_body")],
+        [
+            InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
+            InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
+        ]
+    ])
+
+    await message.answer(
+        "Какую часть тела хотите замерить?",
+        reply_markup=inline_menu
+    )
+
+@dp.callback_query(F.data == "upper_body")
+async def upper_body(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры верхней части тела.\n"
+        "Пожалуйста, напишите ваш обхват груди в сантиметрах (например: 95):"
+    )
+    await callback.answer()
+
+@dp.callback_query(F.data == "lower_body")
+async def process_lower_body(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры нижней части тела.\n"
+        "Пожалуйста, напишите ваш обхват бедер в сантиметрах (например: 100):"
+    )
+    await callback.answer()
+
+@dp.callback_query(F.data == "info")
+async def process_info(callback: CallbackQuery):
+    await callback.message.answer(
+        "Инструкция:\n"
+        "1. Выберите часть тела\n"
+        "2. Введите замеры в сантиметрах\n"
+        "3. Получите рекомендации"
+    )
+    await callback.answer()
 
 async def main():
     print('Бот запущен!')
-    await dp.start_polling()
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     asyncio.run(main())
