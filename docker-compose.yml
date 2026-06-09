@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: bodytracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d bodytracker"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  bot:
+    build: .
+    environment:
+      TELEGRAM_BOT_TOKEN: "8642469315:AAGmFIdo-TLmIEm6q8w53IkzZqIbWzG75AM"  # ← НАСТОЯЩИЙ ТОКЕН!
+      DATABASE_URL: "postgresql://myuser:mypassword@db:5432/bodytracker"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  postgres_data:
