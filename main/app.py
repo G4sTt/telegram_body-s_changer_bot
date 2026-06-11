@@ -40,8 +40,8 @@ async def body(message: Message):
         reply_markup=inline_menu
     )
 
-@dp.callback_query(Command("upper_body"))
-async def upper_body(message: Message):
+@dp.callback_query(F.data == "upper_body")
+async def process_upper_body(callback: CallbackQuery):
     inline_menu = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Обхват бицепса", callback_data="upper_body_arm")],
         [InlineKeyboardButton(text="Обхват предплечья", callback_data="upper_body_forearm")],
@@ -51,10 +51,11 @@ async def upper_body(message: Message):
         ]
     ])
 
-    await message.answer(
+    await callback.message.answer(
         "Какую часть верха хотите замерить?",
         reply_markup=inline_menu
     )
+    await callback.answer()
 
 @dp.callback_query(F.data == "lower_body")
 async def process_lower_body(callback: CallbackQuery):
