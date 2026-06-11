@@ -41,12 +41,20 @@ async def body(message: Message):
     )
 
 @dp.callback_query(F.data == "upper_body")
-async def upper_body(callback: CallbackQuery):
-    await callback.message.answer(
-        "Вы выбрали замеры верхней части тела.\n"
-        "Пожалуйста, напишите ваш обхват груди в сантиметрах (например: 95):"
+async def upper_body(message: Message):
+    inline_menu = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Обхват бицепса", callback_data="upper_body_arm")],
+        [InlineKeyboardButton(text="Обхват предплечья", callback_data="upper_body_forearm")],
+        [
+            InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
+            InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
+        ]
+    ])
+
+    await message.answer(
+        "Какую часть верха хотите замерить?",
+        reply_markup=inline_menu
     )
-    await callback.answer()
 
 @dp.callback_query(F.data == "lower_body")
 async def process_lower_body(callback: CallbackQuery):
