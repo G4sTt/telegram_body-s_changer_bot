@@ -40,7 +40,7 @@ async def body(message: Message):
         reply_markup=inline_menu
     )
 
-@dp.callback_query(F.data == "upper_body")
+@dp.callback_query(Command("upper_body"))
 async def upper_body(message: Message):
     inline_menu = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Обхват бицепса", callback_data="upper_body_arm")],
