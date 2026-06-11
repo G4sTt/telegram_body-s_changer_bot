@@ -65,6 +65,14 @@ async def process_lower_body(callback: CallbackQuery):
     )
     await callback.answer()
 
+@dp.callback_query(F.data == "upper_body_forearm")
+async def process_upper_body_forearm(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры предплечья.\n"
+        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
+    )
+    await callback.answer()
+
 @dp.callback_query(F.data == "info")
 async def process_info(callback: CallbackQuery):
     await callback.message.answer(
