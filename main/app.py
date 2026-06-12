@@ -45,6 +45,7 @@ async def process_upper_body(callback: CallbackQuery):
     inline_menu = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Обхват бицепса", callback_data="upper_body_arm")],
         [InlineKeyboardButton(text="Обхват предплечья", callback_data="upper_body_forearm")],
+        [InlineKeyboardButton(text="Обхват плеч", callback_data="upper_body_shoulders")],
         [
             InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
             InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
@@ -70,6 +71,22 @@ async def process_upper_body_forearm(callback: CallbackQuery):
     await callback.message.answer(
         "Вы выбрали замеры предплечья.\n"
         "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
+    )
+    await callback.answer()
+
+@dp.callback_query(F.data == "upper_body_arm")
+async def process_upper_body_forearm(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры бицепса.\n"
+        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
+    )
+    await callback.answer()
+
+@dp.callback_query(F.data == "upper_body_shoulders")
+async def process_upper_body_forearm(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры плеч.\n"
+        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 122):"
     )
     await callback.answer()
 
