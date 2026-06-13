@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
+from aiogram.fsm.storage.memory import MemoryStorage
 from magic_filter import F
 from states import BodyMeasurements
 
@@ -14,7 +15,7 @@ if not TOKEN:
     raise ValueError("TELEGRAM_BODY_TOKEN not set")
 
 bot = Bot(token=TOKEN)
-dp = Dispatcher()
+dp = Dispatcher(storage=MemoryStorage())
 
 @dp.message(Command("start"))
 async def start(message: Message):
@@ -74,6 +75,7 @@ async def process_upper_body_forearm(callback: CallbackQuery):
         "Вы выбрали замеры предплечья.\n"
         "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
     )
+    await callback.set_state(BodyMeasurements.waiting_for_forearm)
     await callback.answer()
 
 @dp.callback_query(F.data == "upper_body_arm")
@@ -82,6 +84,7 @@ async def process_upper_body_forearm(callback: CallbackQuery):
         "Вы выбрали замеры бицепса.\n"
         "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
     )
+    await callback.set_state(BodyMeasurements.waiting_for_bicep)
     await callback.answer()
 
 @dp.callback_query(F.data == "upper_body_shoulders")
@@ -90,6 +93,7 @@ async def process_upper_body_forearm(callback: CallbackQuery):
         "Вы выбрали замеры плеч.\n"
         "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 122):"
     )
+    await callback.set_state(BodyMeasurements.waiting_for_shoulders)
     await callback.answer()
 
 @dp.callback_query(F.data == "upper_body_chest")
@@ -98,6 +102,7 @@ async def process_upper_body_forearm(callback: CallbackQuery):
         "Вы выбрали замеры груди.\n"
         "Пожалуйста, напишите ваш обхват груди в самой крупной части в сантиметрах (например: 108):"
     )
+    await callback.set_state(BodyMeasurements.waiting_for_chest)
     await callback.answer()
 
 @dp.callback_query(F.data == "info")
