@@ -5,6 +5,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.filters import Command
 from magic_filter import F
+from states import BodyMeasurements
 
 load_dotenv()
 
@@ -46,6 +47,7 @@ async def process_upper_body(callback: CallbackQuery):
         [InlineKeyboardButton(text="Обхват бицепса", callback_data="upper_body_arm")],
         [InlineKeyboardButton(text="Обхват предплечья", callback_data="upper_body_forearm")],
         [InlineKeyboardButton(text="Обхват плеч", callback_data="upper_body_shoulders")],
+        [InlineKeyboardButton(text="Обхват груди", callback_data="upper_body_chest")],
         [
             InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
             InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
@@ -90,13 +92,20 @@ async def process_upper_body_forearm(callback: CallbackQuery):
     )
     await callback.answer()
 
+@dp.callback_query(F.data == "upper_body_chest")
+async def process_upper_body_forearm(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замеры груди.\n"
+        "Пожалуйста, напишите ваш обхват груди в самой крупной части в сантиметрах (например: 108):"
+    )
+    await callback.answer()
+
 @dp.callback_query(F.data == "info")
 async def process_info(callback: CallbackQuery):
     await callback.message.answer(
         "Инструкция:\n"
         "1. Выберите часть тела\n"
         "2. Введите замеры в сантиметрах\n"
-        "3. Получите рекомендации"
     )
     await callback.answer()
 
