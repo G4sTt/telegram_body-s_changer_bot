@@ -49,6 +49,7 @@ async def process_upper_body(callback: CallbackQuery):
         [InlineKeyboardButton(text="Обхват предплечья", callback_data="upper_body_forearm")],
         [InlineKeyboardButton(text="Обхват плеч", callback_data="upper_body_shoulders")],
         [InlineKeyboardButton(text="Обхват груди", callback_data="upper_body_chest")],
+        [InlineKeyboardButton(text="Обхват талии", callback_data="upper_body_waist")],
         [
             InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
             InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
@@ -62,18 +63,28 @@ async def process_upper_body(callback: CallbackQuery):
     await callback.answer()
 
 @dp.callback_query(F.data == "lower_body")
-async def process_lower_body(callback: CallbackQuery):
+async def process_upper_body(callback: CallbackQuery):
+    inline_menu = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Обхват бедра", callback_data="lower_body_hip")],
+        [InlineKeyboardButton(text="Обхват икры", callback_data="upper_body_calf")],
+        [InlineKeyboardButton(text="Обхват ягодиц", callback_data="upper_body_ass")],
+        [
+            InlineKeyboardButton(text="Инструкция 📖", callback_data="info"),
+            InlineKeyboardButton(text="Сайт 🌐", url="https://google.com")
+        ]
+    ])
+
     await callback.message.answer(
-        "Вы выбрали замеры нижней части тела.\n"
-        "Пожалуйста, напишите ваш обхват бедер в сантиметрах (например: 100):"
+        "Какую часть низа хотите замерить?",
+        reply_markup=inline_menu
     )
     await callback.answer()
 
 @dp.callback_query(F.data == "upper_body_forearm")
 async def process_upper_body_forearm(callback: CallbackQuery):
     await callback.message.answer(
-        "Вы выбрали замеры предплечья.\n"
-        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
+        "Вы выбрали замер предплечья.\n"
+        "Пожалуйста, напишите обхват вашего предплечья в самой крупной части в сантиметрах:"
     )
     await callback.set_state(BodyMeasurements.waiting_for_forearm)
     await callback.answer()
@@ -81,8 +92,8 @@ async def process_upper_body_forearm(callback: CallbackQuery):
 @dp.callback_query(F.data == "upper_body_arm")
 async def process_upper_body_forearm(callback: CallbackQuery):
     await callback.message.answer(
-        "Вы выбрали замеры бицепса.\n"
-        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 42):"
+        "Вы выбрали замер бицепса.\n"
+        "Пожалуйста, напишите обхват вашего бицепса в самой крупной части в сантиметрах:"
     )
     await callback.set_state(BodyMeasurements.waiting_for_bicep)
     await callback.answer()
@@ -90,8 +101,8 @@ async def process_upper_body_forearm(callback: CallbackQuery):
 @dp.callback_query(F.data == "upper_body_shoulders")
 async def process_upper_body_forearm(callback: CallbackQuery):
     await callback.message.answer(
-        "Вы выбрали замеры плеч.\n"
-        "Пожалуйста, напишите ваш обхват предплечья в самой крупной части в сантиметрах (например: 122):"
+        "Вы выбрали замер плеч.\n"
+        "Пожалуйста, напишите обхват ваших плеч в самой крупной части в сантиметрах:"
     )
     await callback.set_state(BodyMeasurements.waiting_for_shoulders)
     await callback.answer()
@@ -99,8 +110,17 @@ async def process_upper_body_forearm(callback: CallbackQuery):
 @dp.callback_query(F.data == "upper_body_chest")
 async def process_upper_body_forearm(callback: CallbackQuery):
     await callback.message.answer(
-        "Вы выбрали замеры груди.\n"
-        "Пожалуйста, напишите ваш обхват груди в самой крупной части в сантиметрах (например: 108):"
+        "Вы выбрали замер груди.\n"
+        "Пожалуйста, напишите обхват вашей груди в самой крупной части в сантиметрах:"
+    )
+    await callback.set_state(BodyMeasurements.waiting_for_chest)
+    await callback.answer()
+
+@dp.callback_query(F.data == "upper_body_waist")
+async def process_upper_body_waist(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замер талии.\n"
+        "Пожалуйста, напишите обхват вашей талии в самой узкой части в сантиметрах:"
     )
     await callback.set_state(BodyMeasurements.waiting_for_chest)
     await callback.answer()
