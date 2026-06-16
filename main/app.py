@@ -125,6 +125,24 @@ async def process_upper_body_waist(callback: CallbackQuery):
     await callback.set_state(BodyMeasurements.waiting_for_chest)
     await callback.answer()
 
+@dp.callback_query(F.data == "upper_body_calf")
+async def process_upper_body_calf(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замер икры.\n"
+        "Пожалуйста, напишите обхват вашей икры в самой крупной части в сантиметрах:"
+    )
+    await callback.set_state(BodyMeasurements.waiting_for_forearm)
+    await callback.answer()
+
+@dp.callback_query(F.data == "upper_body_hip")
+async def process_upper_body_hip(callback: CallbackQuery):
+    await callback.message.answer(
+        "Вы выбрали замер бедра.\n"
+        "Пожалуйста, напишите обхват вашего бедра в самой крупной части в сантиметрах:"
+    )
+    await callback.set_state(BodyMeasurements.waiting_for_forearm)
+    await callback.answer()
+
 @dp.callback_query(F.data == "info")
 async def process_info(callback: CallbackQuery):
     await callback.message.answer(
